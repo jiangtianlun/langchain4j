@@ -1,6 +1,7 @@
 package dev.langchain4j.model.openai;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.knuddels.jtokkit.Encodings;
 import com.knuddels.jtokkit.api.Encoding;
@@ -164,7 +165,7 @@ public class OpenAiTokenizer implements Tokenizer {
                     Map<?, ?> arguments;
                     try {
                         arguments = OBJECT_MAPPER.readValue(toolExecutionRequest.arguments(), Map.class);
-                    } catch (JsonProcessingException e) {
+                    }   catch (JsonProcessingException e) {
                         throw new RuntimeException(e);
                     }
                     for (Map.Entry<?, ?> argument : arguments.entrySet()) {

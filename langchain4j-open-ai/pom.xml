@@ -8,11 +8,10 @@
         <groupId>dev.langchain4j</groupId>
         <artifactId>langchain4j-parent</artifactId>
         <version>0.35.0</version>
-        <relativePath>../langchain4j-parent/pom.xml</relativePath>
     </parent>
 
-    <artifactId>langchain4j-open-ai</artifactId>
-    <name>LangChain4j :: Integration :: OpenAI</name>
+    <artifactId>langchain4j-open-ai-custom</artifactId>
+    <name>LangChain4j :: Integration :: OpenAI :: custom</name>
 
     <dependencies>
 
@@ -33,14 +32,17 @@
 
         <dependency>
             <groupId>dev.ai4j</groupId>
-            <artifactId>openai4j</artifactId>
+            <artifactId>openai4j-custom</artifactId>
             <exclusions>
                 <exclusion>
                     <groupId>org.jetbrains.kotlin</groupId>
                     <artifactId>kotlin-stdlib-jdk8</artifactId>
                 </exclusion>
             </exclusions>
+            <version>0.23.0</version>
         </dependency>
+
+
 
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
