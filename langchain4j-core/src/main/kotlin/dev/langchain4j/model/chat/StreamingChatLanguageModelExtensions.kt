@@ -95,6 +95,10 @@ fun StreamingChatLanguageModel.chatFlow(block: ChatRequestBuilder.() -> Unit): F
                     trySend(StreamingChatLanguageModelReply.PartialResponse(token))
                 }
 
+                override fun onPartialReasoningResponse(partialReasoningResponse: String?) {
+                    TODO("Not yet implemented")
+                }
+
                 override fun onCompleteResponse(completeResponse: ChatResponse) {
                     logger.trace(
                         Markers.SENSITIVE,

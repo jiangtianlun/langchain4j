@@ -1,5 +1,15 @@
 package dev.langchain4j.model.openai;
 
+import static dev.langchain4j.internal.Utils.isNullOrBlank;
+import static dev.langchain4j.internal.Utils.isNullOrEmpty;
+import static dev.langchain4j.model.openai.InternalOpenAiHelper.finishReasonFrom;
+import static dev.langchain4j.model.openai.InternalOpenAiHelper.tokenUsageFrom;
+import static java.util.Collections.singletonList;
+import static java.util.stream.Collectors.toList;
+
+import dev.langchain4j.agent.tool.ToolExecutionRequest;
+import dev.langchain4j.data.message.AiMessage;
+import dev.langchain4j.model.chat.response.ChatResponse;
 import dev.langchain4j.model.openai.internal.chat.ChatCompletionChoice;
 import dev.langchain4j.model.openai.internal.chat.ChatCompletionResponse;
 import dev.langchain4j.model.openai.internal.chat.Delta;
@@ -8,23 +18,12 @@ import dev.langchain4j.model.openai.internal.chat.ToolCall;
 import dev.langchain4j.model.openai.internal.completion.CompletionChoice;
 import dev.langchain4j.model.openai.internal.completion.CompletionResponse;
 import dev.langchain4j.model.openai.internal.shared.Usage;
-import dev.langchain4j.agent.tool.ToolExecutionRequest;
-import dev.langchain4j.data.message.AiMessage;
-import dev.langchain4j.model.chat.response.ChatResponse;
 import dev.langchain4j.model.output.FinishReason;
 import dev.langchain4j.model.output.TokenUsage;
-
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
-
-import static dev.langchain4j.internal.Utils.isNullOrBlank;
-import static dev.langchain4j.internal.Utils.isNullOrEmpty;
-import static dev.langchain4j.model.openai.InternalOpenAiHelper.finishReasonFrom;
-import static dev.langchain4j.model.openai.InternalOpenAiHelper.tokenUsageFrom;
-import static java.util.Collections.singletonList;
-import static java.util.stream.Collectors.toList;
 
 /**
  * This class needs to be thread safe because it is called when a streaming result comes back
@@ -35,10 +34,13 @@ public class OpenAiStreamingResponseBuilder {
 
     private final StringBuffer contentBuilder = new StringBuffer();
 
+    private final StringBuffer reasonBuilder = new StringBuffer();
+
     private final StringBuffer toolNameBuilder = new StringBuffer();
     private final StringBuffer toolArgumentsBuilder = new StringBuffer();
 
-    private final Map<Integer, ToolExecutionRequestBuilder> indexToToolExecutionRequestBuilder = new ConcurrentHashMap<>();
+    private final Map<Integer, ToolExecutionRequestBuilder> indexToToolExecutionRequestBuilder =
+            new ConcurrentHashMap<>();
 
     private final AtomicReference<String> id = new AtomicReference<>();
     private final AtomicReference<Long> created = new AtomicReference<>();
@@ -99,6 +101,11 @@ public class OpenAiStreamingResponseBuilder {
             this.contentBuilder.append(content);
         }
 
+        String reasonContent = delta.reasoningContent();
+        if (!isNullOrEmpty(reasonContent)) {
+            this.reasonBuilder.append(reasonContent);
+        }
+
         if (delta.functionCall() != null) {
             FunctionCall functionCall = delta.functionCall();
 
@@ -115,9 +122,7 @@ public class OpenAiStreamingResponseBuilder {
             ToolCall toolCall = delta.toolCalls().get(0);
 
             ToolExecutionRequestBuilder builder = this.indexToToolExecutionRequestBuilder.computeIfAbsent(
-                    toolCall.index(),
-                    idx -> new ToolExecutionRequestBuilder()
-            );
+                    toolCall.index(), idx -> new ToolExecutionRequestBuilder());
 
             if (toolCall.id() != null) {
                 builder.idBuilder.append(toolCall.id());
@@ -177,6 +182,7 @@ public class OpenAiStreamingResponseBuilder {
                 .build();
 
         String text = contentBuilder.toString();
+        String reasonText = reasonBuilder.toString();
 
         String toolName = toolNameBuilder.toString();
         if (!toolName.isEmpty()) {
@@ -185,12 +191,13 @@ public class OpenAiStreamingResponseBuilder {
                     .arguments(toolArgumentsBuilder.toString())
                     .build();
 
-            AiMessage aiMessage = isNullOrBlank(text) ?
-                    AiMessage.from(toolExecutionRequest) :
-                    AiMessage.from(text, singletonList(toolExecutionRequest));
-
+            AiMessage aiMessage = isNullOrBlank(text)
+                    ? AiMessage.from(toolExecutionRequest)
+                    : AiMessage.from(text, singletonList(toolExecutionRequest));
+            AiMessage resonMessage = isNullOrBlank(reasonText) ? null : AiMessage.from(reasonText);
             return ChatResponse.builder()
                     .aiMessage(aiMessage)
+                    .reasonMessage(resonMessage)
                     .metadata(chatResponseMetadata)
                     .build();
         }
@@ -204,20 +211,25 @@ public class OpenAiStreamingResponseBuilder {
                             .build())
                     .collect(toList());
 
-            AiMessage aiMessage = isNullOrBlank(text) ?
-                    AiMessage.from(toolExecutionRequests) :
-                    AiMessage.from(text, toolExecutionRequests);
+            AiMessage aiMessage = isNullOrBlank(text)
+                    ? AiMessage.from(toolExecutionRequests)
+                    : AiMessage.from(text, toolExecutionRequests);
+
+            AiMessage resonMessage = isNullOrBlank(reasonText) ? null : AiMessage.from(reasonText);
 
             return ChatResponse.builder()
                     .aiMessage(aiMessage)
+                    .reasonMessage(resonMessage)
                     .metadata(chatResponseMetadata)
                     .build();
         }
 
         if (!isNullOrBlank(text)) {
             AiMessage aiMessage = AiMessage.from(text);
+            AiMessage resonMessage = isNullOrBlank(reasonText) ? null : AiMessage.from(reasonText);
             return ChatResponse.builder()
                     .aiMessage(aiMessage)
+                    .reasonMessage(resonMessage)
                     .metadata(chatResponseMetadata)
                     .build();
         }

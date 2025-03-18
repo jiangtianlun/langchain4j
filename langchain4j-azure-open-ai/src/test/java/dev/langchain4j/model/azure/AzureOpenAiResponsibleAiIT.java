@@ -1,19 +1,18 @@
 package dev.langchain4j.model.azure;
 
-import dev.langchain4j.model.chat.ChatLanguageModel;
-import dev.langchain4j.model.chat.StreamingChatLanguageModel;
-import dev.langchain4j.model.chat.response.ChatResponse;
-import dev.langchain4j.model.chat.response.StreamingChatResponseHandler;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
-
-import java.util.concurrent.CompletableFuture;
-
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.fail;
+
+import dev.langchain4j.model.chat.ChatLanguageModel;
+import dev.langchain4j.model.chat.StreamingChatLanguageModel;
+import dev.langchain4j.model.chat.response.ChatResponse;
+import dev.langchain4j.model.chat.response.StreamingChatResponseHandler;
+import java.util.concurrent.CompletableFuture;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 
 /**
  * WARNING: this class has on purpose some violent and self harm test cases, this is why they are in a specific class.
@@ -71,6 +70,9 @@ class AzureOpenAiResponsibleAiIT {
             }
 
             @Override
+            public void onPartialReasoningResponse(final String partialReasoningResponse) {}
+
+            @Override
             public void onCompleteResponse(ChatResponse completeResponse) {
                 fail("onCompleteResponse() must not be called");
             }
@@ -83,7 +85,8 @@ class AzureOpenAiResponsibleAiIT {
 
         Throwable error = futureThrowable.get(10, SECONDS);
 
-        assertThat(error).isExactlyInstanceOf(com.azure.core.exception.HttpResponseException.class)
+        assertThat(error)
+                .isExactlyInstanceOf(com.azure.core.exception.HttpResponseException.class)
                 .hasMessageContaining("ResponsibleAIPolicyViolation")
                 .hasMessageContaining("\"violence\":{\"filtered\":true");
     }
@@ -101,6 +104,9 @@ class AzureOpenAiResponsibleAiIT {
             }
 
             @Override
+            public void onPartialReasoningResponse(final String partialReasoningResponse) {}
+
+            @Override
             public void onCompleteResponse(ChatResponse completeResponse) {
                 fail("onCompleteResponse() must not be called");
             }
@@ -113,7 +119,8 @@ class AzureOpenAiResponsibleAiIT {
 
         Throwable error = futureThrowable.get(10, SECONDS);
 
-        assertThat(error).isExactlyInstanceOf(com.azure.core.exception.HttpResponseException.class)
+        assertThat(error)
+                .isExactlyInstanceOf(com.azure.core.exception.HttpResponseException.class)
                 .hasMessageContaining("ResponsibleAIPolicyViolation")
                 .hasMessageContaining("\"self_harm\":{\"filtered\":true");
     }

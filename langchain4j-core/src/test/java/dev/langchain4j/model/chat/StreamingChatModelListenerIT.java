@@ -1,5 +1,10 @@
 package dev.langchain4j.model.chat;
 
+import static dev.langchain4j.model.ModelProvider.OTHER;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+
 import dev.langchain4j.agent.tool.ToolSpecification;
 import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.data.message.UserMessage;
@@ -13,17 +18,11 @@ import dev.langchain4j.model.chat.request.json.JsonObjectSchema;
 import dev.langchain4j.model.chat.response.ChatResponse;
 import dev.langchain4j.model.chat.response.ChatResponseMetadata;
 import dev.langchain4j.model.chat.response.StreamingChatResponseHandler;
-import org.assertj.core.data.Percentage;
-import org.junit.jupiter.api.Test;
-
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
-
-import static dev.langchain4j.model.ModelProvider.OTHER;
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
+import org.assertj.core.data.Percentage;
+import org.junit.jupiter.api.Test;
 
 /**
  * Make sure these dependencies are present in the module where this test class is extended:
@@ -110,7 +109,8 @@ public abstract class StreamingChatModelListenerIT {
 
             @Override
             public void onError(ChatModelErrorContext errorContext) {
-                fail("onError() must not be called. Exception: " + errorContext.error().getMessage());
+                fail("onError() must not be called. Exception: "
+                        + errorContext.error().getMessage());
             }
         };
 
@@ -118,8 +118,7 @@ public abstract class StreamingChatModelListenerIT {
 
         UserMessage userMessage = UserMessage.from("hello");
 
-        ChatRequest.Builder chatRequestBuilder = ChatRequest.builder()
-                .messages(userMessage);
+        ChatRequest.Builder chatRequestBuilder = ChatRequest.builder().messages(userMessage);
 
         ToolSpecification toolSpecification = null;
         if (supportsTools()) {
@@ -154,7 +153,6 @@ public abstract class StreamingChatModelListenerIT {
         }
 
         assertThat(onRequestInvocations).hasValue(1);
-
 
         ChatResponse chatResponse = chatResponseReference.get();
         assertThat(chatResponse.aiMessage()).isEqualTo(aiMessage);
@@ -244,6 +242,9 @@ public abstract class StreamingChatModelListenerIT {
             public void onPartialResponse(String partialResponse) {
                 fail("onPartialResponse() must not be called");
             }
+
+            @Override
+            public void onPartialReasoningResponse(final String partialReasoningResponse) {}
 
             @Override
             public void onCompleteResponse(ChatResponse completeResponse) {

@@ -4,35 +4,32 @@ import dev.langchain4j.Experimental;
 import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.model.output.FinishReason;
 import dev.langchain4j.model.output.TokenUsage;
-import org.jspecify.annotations.NonNull;
-
 import java.util.Objects;
-
-import static dev.langchain4j.internal.ValidationUtils.ensureNotNull;
+import org.jspecify.annotations.NonNull;
 
 @Experimental
 public class ChatResponse {
 
     private final AiMessage aiMessage;
     private final ChatResponseMetadata metadata;
+    private final AiMessage reasonMessage;
 
     protected ChatResponse(@NonNull Builder builder) {
-        this.aiMessage = ensureNotNull(builder.aiMessage, "aiMessage");
+        this.aiMessage = builder.aiMessage;
+        this.reasonMessage = builder.reasonMessage;
 
         ChatResponseMetadata.Builder<?> metadataBuilder = ChatResponseMetadata.builder();
 
         if (builder.tokenUsage != null) {
             if (builder.metadata != null) {
-                throw new IllegalArgumentException(
-                        "Cannot set both 'metadata' and 'tokenUsage' on ChatResponse");
+                throw new IllegalArgumentException("Cannot set both 'metadata' and 'tokenUsage' on ChatResponse");
             }
             metadataBuilder.tokenUsage(builder.tokenUsage);
         }
 
         if (builder.finishReason != null) {
             if (builder.metadata != null) {
-                throw new IllegalArgumentException(
-                        "Cannot set both 'metadata' and 'finishReason' on ChatResponse");
+                throw new IllegalArgumentException("Cannot set both 'metadata' and 'finishReason' on ChatResponse");
             }
             metadataBuilder.finishReason(builder.finishReason);
         }
@@ -46,6 +43,10 @@ public class ChatResponse {
 
     public AiMessage aiMessage() {
         return aiMessage;
+    }
+
+    public AiMessage reasonMessage() {
+        return reasonMessage;
     }
 
     @Experimental
@@ -69,20 +70,21 @@ public class ChatResponse {
         if (o == null || getClass() != o.getClass()) return false;
         ChatResponse that = (ChatResponse) o;
         return Objects.equals(this.aiMessage, that.aiMessage)
+                && Objects.equals(this.reasonMessage, that.reasonMessage)
                 && Objects.equals(this.metadata, that.metadata);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(aiMessage, metadata);
+        return Objects.hash(aiMessage, reasonMessage, metadata);
     }
 
     @Override
     public String toString() {
-        return "ChatResponse {" +
-                " aiMessage = " + aiMessage +
-                ", metadata = " + metadata +
-                " }";
+        return "ChatResponse {" + " aiMessage = "
+                + aiMessage + "reasonMessage"
+                + reasonMessage + ", metadata = "
+                + metadata + " }";
     }
 
     public static Builder builder() {
@@ -95,9 +97,15 @@ public class ChatResponse {
         private ChatResponseMetadata metadata;
         private TokenUsage tokenUsage;
         private FinishReason finishReason;
+        private AiMessage reasonMessage;
 
         public Builder aiMessage(AiMessage aiMessage) {
             this.aiMessage = aiMessage;
+            return this;
+        }
+
+        public Builder reasonMessage(AiMessage reasonMessage) {
+            this.reasonMessage = reasonMessage;
             return this;
         }
 

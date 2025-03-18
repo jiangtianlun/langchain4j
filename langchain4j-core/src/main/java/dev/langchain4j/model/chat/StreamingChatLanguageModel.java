@@ -1,5 +1,7 @@
 package dev.langchain4j.model.chat;
 
+import static dev.langchain4j.model.ModelProvider.OTHER;
+
 import dev.langchain4j.data.message.ChatMessage;
 import dev.langchain4j.data.message.UserMessage;
 import dev.langchain4j.model.ModelProvider;
@@ -9,14 +11,11 @@ import dev.langchain4j.model.chat.request.ChatRequest;
 import dev.langchain4j.model.chat.request.ChatRequestParameters;
 import dev.langchain4j.model.chat.response.ChatResponse;
 import dev.langchain4j.model.chat.response.StreamingChatResponseHandler;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-
-import static dev.langchain4j.model.ModelProvider.OTHER;
 
 /**
  * Represents a language model that has a chat API and can stream a response one token at a time.
@@ -49,6 +48,11 @@ public interface StreamingChatLanguageModel {
             @Override
             public void onPartialResponse(String partialResponse) {
                 handler.onPartialResponse(partialResponse);
+            }
+
+            @Override
+            public void onPartialReasoningResponse(final String partialReasoningResponse) {
+                handler.onPartialReasoningResponse(partialReasoningResponse);
             }
 
             @Override
@@ -86,18 +90,15 @@ public interface StreamingChatLanguageModel {
 
     default void chat(String userMessage, StreamingChatResponseHandler handler) {
 
-        ChatRequest chatRequest = ChatRequest.builder()
-                .messages(UserMessage.from(userMessage))
-                .build();
+        ChatRequest chatRequest =
+                ChatRequest.builder().messages(UserMessage.from(userMessage)).build();
 
         chat(chatRequest, handler);
     }
 
     default void chat(List<ChatMessage> messages, StreamingChatResponseHandler handler) {
 
-        ChatRequest chatRequest = ChatRequest.builder()
-                .messages(messages)
-                .build();
+        ChatRequest chatRequest = ChatRequest.builder().messages(messages).build();
 
         chat(chatRequest, handler);
     }

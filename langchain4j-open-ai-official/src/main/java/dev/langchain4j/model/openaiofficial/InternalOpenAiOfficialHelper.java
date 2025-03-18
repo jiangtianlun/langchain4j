@@ -590,6 +590,9 @@ class InternalOpenAiOfficialHelper {
             }
 
             @Override
+            public void onPartialReasoningResponse(final String partialReasoningResponse) {}
+
+            @Override
             public void onCompleteResponse(ChatResponse completeResponse) {
                 handler.onComplete(convertResponse(completeResponse));
             }

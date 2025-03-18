@@ -60,6 +60,9 @@ class GitHubModelsStreamingChatModelIT {
             }
 
             @Override
+            public void onPartialReasoningResponse(final String partialReasoningResponse) {}
+
+            @Override
             public void onCompleteResponse(ChatResponse completeResponse) {
                 futureAnswer.complete(answerBuilder.toString());
                 futureResponse.complete(completeResponse);
@@ -177,6 +180,9 @@ class GitHubModelsStreamingChatModelIT {
             }
 
             @Override
+            public void onPartialReasoningResponse(final String partialReasoningResponse) {}
+
+            @Override
             public void onCompleteResponse(ChatResponse completeResponse) {
                 futureResponse.complete(completeResponse);
             }
@@ -217,6 +223,9 @@ class GitHubModelsStreamingChatModelIT {
 
             @Override
             public void onPartialResponse(String partialResponse) {}
+
+            @Override
+            public void onPartialReasoningResponse(final String partialReasoningResponse) {}
 
             @Override
             public void onCompleteResponse(ChatResponse completeResponse) {
@@ -303,6 +312,9 @@ class GitHubModelsStreamingChatModelIT {
             }
 
             @Override
+            public void onPartialReasoningResponse(final String partialReasoningResponse) {}
+
+            @Override
             public void onCompleteResponse(ChatResponse completeResponse) {
                 futureResponse.complete(completeResponse);
             }
@@ -345,6 +357,9 @@ class GitHubModelsStreamingChatModelIT {
 
             @Override
             public void onPartialResponse(String partialResponse) {}
+
+            @Override
+            public void onPartialReasoningResponse(final String partialReasoningResponse) {}
 
             @Override
             public void onCompleteResponse(ChatResponse completeResponse) {

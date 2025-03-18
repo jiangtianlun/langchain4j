@@ -1,18 +1,17 @@
 package dev.langchain4j.model.jlama;
 
+import static dev.langchain4j.model.output.FinishReason.LENGTH;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.model.chat.StreamingChatLanguageModel;
 import dev.langchain4j.model.chat.response.ChatResponse;
 import dev.langchain4j.model.chat.response.StreamingChatResponseHandler;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-
 import java.io.File;
 import java.util.concurrent.CompletableFuture;
-
-import static dev.langchain4j.model.output.FinishReason.LENGTH;
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 class JlamaStreamingChatModelIT {
 
@@ -48,6 +47,9 @@ class JlamaStreamingChatModelIT {
             public void onPartialResponse(String partialResponse) {
                 answerBuilder.append(partialResponse);
             }
+
+            @Override
+            public void onPartialReasoningResponse(final String partialReasoningResponse) {}
 
             @Override
             public void onCompleteResponse(ChatResponse completeResponse) {

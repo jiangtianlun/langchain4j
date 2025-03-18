@@ -20,6 +20,12 @@ public interface StreamingChatResponseHandler {
      */
     void onPartialResponse(String partialResponse);
 
+    // deepseek的处理
+    void onPartialReasoningResponse(String partialReasoningResponse);
+    // default do nothing
+
+    ;
+
     /**
      * Invoked when the model has finished streaming a response.
      * If the model requests the execution of one or multiple tools,

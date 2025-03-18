@@ -8,9 +8,8 @@ import dev.langchain4j.data.message.UserMessage;
 import dev.langchain4j.model.chat.ChatLanguageModel;
 import dev.langchain4j.model.chat.StreamingChatLanguageModel;
 import dev.langchain4j.model.chat.response.ChatResponse;
-import java.util.concurrent.CompletableFuture;
-
 import dev.langchain4j.model.chat.response.StreamingChatResponseHandler;
+import java.util.concurrent.CompletableFuture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
@@ -84,6 +83,9 @@ class GitHubModelsResponsibleAiIT {
             }
 
             @Override
+            public void onPartialReasoningResponse(final String partialReasoningResponse) {}
+
+            @Override
             public void onCompleteResponse(ChatResponse completeResponse) {
                 futureAnswer.complete(answerBuilder.toString());
                 futureResponse.complete(completeResponse);
@@ -122,6 +124,9 @@ class GitHubModelsResponsibleAiIT {
             public void onPartialResponse(String partialResponse) {
                 answerBuilder.append(partialResponse);
             }
+
+            @Override
+            public void onPartialReasoningResponse(final String partialReasoningResponse) {}
 
             @Override
             public void onCompleteResponse(ChatResponse completeResponse) {

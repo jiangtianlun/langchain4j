@@ -1,5 +1,13 @@
 package dev.langchain4j.model.ollama;
 
+import static dev.langchain4j.data.message.UserMessage.userMessage;
+import static dev.langchain4j.model.ollama.AbstractOllamaLanguageModelInfrastructure.ollamaBaseUrl;
+import static dev.langchain4j.model.ollama.OllamaImage.LLAMA_3_1;
+import static dev.langchain4j.model.ollama.OllamaJsonUtils.fromJson;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.data.message.UserMessage;
 import dev.langchain4j.model.chat.ChatLanguageModel;
@@ -17,18 +25,9 @@ import dev.langchain4j.model.chat.response.StreamingChatResponseHandler;
 import dev.langchain4j.model.language.LanguageModel;
 import dev.langchain4j.model.language.StreamingLanguageModel;
 import dev.langchain4j.model.output.Response;
-import org.junit.jupiter.api.Test;
-
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-
-import static dev.langchain4j.data.message.UserMessage.userMessage;
-import static dev.langchain4j.model.ollama.AbstractOllamaLanguageModelInfrastructure.ollamaBaseUrl;
-import static dev.langchain4j.model.ollama.OllamaImage.LLAMA_3_1;
-import static dev.langchain4j.model.ollama.OllamaJsonUtils.fromJson;
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import org.junit.jupiter.api.Test;
 
 class OllamaStructuredOutputIT extends AbstractOllamaStructuredOutputLanguageModelInfrastructure {
 
@@ -43,8 +42,7 @@ class OllamaStructuredOutputIT extends AbstractOllamaStructuredOutputLanguageMod
             .required("name", "capital", "languages")
             .build();
 
-    record CountryInfo(String name, String capital, List<String> languages) {
-    }
+    record CountryInfo(String name, String capital, List<String> languages) {}
 
     @Test
     void should_generate_structured_output_using_chat_request_api() {
@@ -123,9 +121,10 @@ class OllamaStructuredOutputIT extends AbstractOllamaStructuredOutputLanguageMod
         streamingOllamaChatModelWithResponseFormat.chat("Tell me about Canada.", new StreamingChatResponseHandler() {
 
             @Override
-            public void onPartialResponse(String partialResponse) {
+            public void onPartialResponse(String partialResponse) {}
 
-            }
+            @Override
+            public void onPartialReasoningResponse(final String partialReasoningResponse) {}
 
             @Override
             public void onCompleteResponse(ChatResponse completeResponse) {
@@ -151,18 +150,18 @@ class OllamaStructuredOutputIT extends AbstractOllamaStructuredOutputLanguageMod
     @Test
     void should_throw_exception_when_both_format_parameters_are_set_for_ollama_chat_model() {
         assertThatThrownBy(() -> OllamaChatModel.builder()
-                .format("json")
-                .responseFormat(ResponseFormat.JSON)
-                .build())
+                        .format("json")
+                        .responseFormat(ResponseFormat.JSON)
+                        .build())
                 .isInstanceOf(IllegalStateException.class);
     }
 
     @Test
     void should_throw_exception_when_both_format_parameters_are_set_for_ollama_streaming_chat_model() {
         assertThatThrownBy(() -> OllamaStreamingChatModel.builder()
-                .format("json")
-                .responseFormat(ResponseFormat.JSON)
-                .build())
+                        .format("json")
+                        .responseFormat(ResponseFormat.JSON)
+                        .build())
                 .isInstanceOf(IllegalStateException.class);
     }
 
