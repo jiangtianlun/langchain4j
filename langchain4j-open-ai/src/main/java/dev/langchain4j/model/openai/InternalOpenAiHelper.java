@@ -40,6 +40,7 @@ import dev.langchain4j.model.chat.request.json.JsonArraySchema;
 import dev.langchain4j.model.chat.request.json.JsonBooleanSchema;
 import dev.langchain4j.model.chat.request.json.JsonEnumSchema;
 import dev.langchain4j.model.chat.request.json.JsonIntegerSchema;
+import dev.langchain4j.model.chat.request.json.JsonNullSchema;
 import dev.langchain4j.model.chat.request.json.JsonNumberSchema;
 import dev.langchain4j.model.chat.request.json.JsonObjectSchema;
 import dev.langchain4j.model.chat.request.json.JsonReferenceSchema;
@@ -350,6 +351,9 @@ public class InternalOpenAiHelper {
         } else if (jsonSchemaElement instanceof JsonReferenceSchema jsonReferenceSchema) {
             return dev.langchain4j.model.openai.internal.chat.JsonReferenceSchema.builder()
                     .reference("#/$defs/" + jsonReferenceSchema.reference())
+                    .build();
+        } else if (jsonSchemaElement instanceof JsonNullSchema jsonNullSchema) {
+            return dev.langchain4j.model.openai.internal.chat.JsonNullSchema.builder()
                     .build();
         } else if (jsonSchemaElement instanceof JsonAnyOfSchema) {
             JsonAnyOfSchema jsonAnyOfSchema = (JsonAnyOfSchema) jsonSchemaElement;
