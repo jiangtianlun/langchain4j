@@ -1,6 +1,5 @@
 package dev.langchain4j.model.chat;
 
-import static dev.langchain4j.model.ModelProvider.OTHER;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -87,6 +86,7 @@ public abstract class StreamingChatModelListenerIT {
 
         AtomicReference<ChatResponse> chatResponseReference = new AtomicReference<>();
         AtomicInteger onResponseInvocations = new AtomicInteger();
+        AtomicReference<StreamingChatLanguageModel> modelReference = new AtomicReference<>();
 
         ChatModelListener listener = new ChatModelListener() {
 
@@ -94,7 +94,9 @@ public abstract class StreamingChatModelListenerIT {
             public void onRequest(ChatModelRequestContext requestContext) {
                 chatRequestReference.set(requestContext.chatRequest());
                 onRequestInvocations.incrementAndGet();
-                assertThat(requestContext.modelProvider()).isNotNull().isNotEqualTo(OTHER);
+                assertThat(requestContext.modelProvider())
+                        .isNotNull()
+                        .isEqualTo(modelReference.get().provider());
                 requestContext.attributes().put("id", "12345");
             }
 
@@ -103,7 +105,9 @@ public abstract class StreamingChatModelListenerIT {
                 chatResponseReference.set(responseContext.chatResponse());
                 onResponseInvocations.incrementAndGet();
                 assertThat(responseContext.chatRequest()).isEqualTo(chatRequestReference.get());
-                assertThat(responseContext.modelProvider()).isNotNull().isNotEqualTo(OTHER);
+                assertThat(responseContext.modelProvider())
+                        .isNotNull()
+                        .isEqualTo(modelReference.get().provider());
                 assertThat(responseContext.attributes()).containsEntry("id", "12345");
             }
 
@@ -115,6 +119,7 @@ public abstract class StreamingChatModelListenerIT {
         };
 
         StreamingChatLanguageModel model = createModel(listener);
+        modelReference.set(model);
 
         UserMessage userMessage = UserMessage.from("hello");
 
@@ -205,6 +210,7 @@ public abstract class StreamingChatModelListenerIT {
 
         AtomicReference<Throwable> errorReference = new AtomicReference<>();
         AtomicInteger onErrorInvocations = new AtomicInteger();
+        AtomicReference<StreamingChatLanguageModel> modelReference = new AtomicReference<>();
 
         ChatModelListener listener = new ChatModelListener() {
 
@@ -212,7 +218,9 @@ public abstract class StreamingChatModelListenerIT {
             public void onRequest(ChatModelRequestContext requestContext) {
                 chatRequestReference.set(requestContext.chatRequest());
                 onRequestInvocations.incrementAndGet();
-                assertThat(requestContext.modelProvider()).isNotNull().isNotEqualTo(OTHER);
+                assertThat(requestContext.modelProvider())
+                        .isNotNull()
+                        .isEqualTo(modelReference.get().provider());
                 requestContext.attributes().put("id", "12345");
             }
 
@@ -226,12 +234,15 @@ public abstract class StreamingChatModelListenerIT {
                 errorReference.set(errorContext.error());
                 onErrorInvocations.incrementAndGet();
                 assertThat(errorContext.chatRequest()).isEqualTo(chatRequestReference.get());
-                assertThat(errorContext.modelProvider()).isNotNull().isNotEqualTo(OTHER);
+                assertThat(errorContext.modelProvider())
+                        .isNotNull()
+                        .isEqualTo(modelReference.get().provider());
                 assertThat(errorContext.attributes()).containsEntry("id", "12345");
             }
         };
 
         StreamingChatLanguageModel model = createFailingModel(listener);
+        modelReference.set(model);
 
         String userMessage = "this message will fail";
 
