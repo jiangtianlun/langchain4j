@@ -10,8 +10,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.data.message.UserMessage;
-import dev.langchain4j.model.chat.ChatLanguageModel;
-import dev.langchain4j.model.chat.StreamingChatLanguageModel;
+import dev.langchain4j.model.chat.ChatModel;
+import dev.langchain4j.model.chat.StreamingChatModel;
 import dev.langchain4j.model.chat.TestStreamingResponseHandler;
 import dev.langchain4j.model.chat.request.ChatRequest;
 import dev.langchain4j.model.chat.request.ResponseFormat;
@@ -47,7 +47,7 @@ class OllamaStructuredOutputIT extends AbstractOllamaStructuredOutputLanguageMod
     @Test
     void should_generate_structured_output_using_chat_request_api() {
         // given
-        ChatLanguageModel ollamaChatModel = OllamaChatModel.builder()
+        ChatModel ollamaChatModel = OllamaChatModel.builder()
                 .baseUrl(ollamaBaseUrl(ollama))
                 .modelName(LLAMA_3_1)
                 .temperature(0.0)
@@ -76,7 +76,7 @@ class OllamaStructuredOutputIT extends AbstractOllamaStructuredOutputLanguageMod
     void should_generate_structured_output_using_response_format() {
 
         // given
-        ChatLanguageModel ollamaChatModel = OllamaChatModel.builder()
+        ChatModel ollamaChatModel = OllamaChatModel.builder()
                 .baseUrl(ollamaBaseUrl(ollama))
                 .modelName(LLAMA_3_1)
                 .temperature(0.0)
@@ -104,7 +104,7 @@ class OllamaStructuredOutputIT extends AbstractOllamaStructuredOutputLanguageMod
     void should_generate_structured_output_using_response_format_streaming() throws Exception {
 
         // given
-        StreamingChatLanguageModel streamingOllamaChatModelWithResponseFormat = OllamaStreamingChatModel.builder()
+        StreamingChatModel streamingOllamaChatModelWithResponseFormat = OllamaStreamingChatModel.builder()
                 .baseUrl(ollamaBaseUrl(ollama))
                 .modelName(LLAMA_3_1)
                 .temperature(0.0)

@@ -16,7 +16,7 @@ import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.data.message.ChatMessage;
 import dev.langchain4j.data.message.ToolExecutionResultMessage;
 import dev.langchain4j.data.message.UserMessage;
-import dev.langchain4j.model.chat.StreamingChatLanguageModel;
+import dev.langchain4j.model.chat.StreamingChatModel;
 import dev.langchain4j.model.chat.TestStreamingChatResponseHandler;
 import dev.langchain4j.model.chat.request.ChatRequest;
 import dev.langchain4j.model.chat.request.json.JsonObjectSchema;
@@ -44,7 +44,7 @@ class GitHubModelsStreamingChatModelIT {
         CompletableFuture<String> futureAnswer = new CompletableFuture<>();
         CompletableFuture<ChatResponse> futureResponse = new CompletableFuture<>();
 
-        StreamingChatLanguageModel model = GitHubModelsStreamingChatModel.builder()
+        StreamingChatModel model = GitHubModelsStreamingChatModel.builder()
                 .gitHubToken(System.getenv("GITHUB_TOKEN"))
                 .modelName(PHI_3_5_MINI_INSTRUCT)
                 .logRequestsAndResponses(true)
@@ -94,7 +94,7 @@ class GitHubModelsStreamingChatModelIT {
     @CsvSource({"Mistral-nemo", "meta-llama-3-8b-instruct"})
     void different_available_models(String modelName) {
 
-        StreamingChatLanguageModel model = GitHubModelsStreamingChatModel.builder()
+        StreamingChatModel model = GitHubModelsStreamingChatModel.builder()
                 .gitHubToken(System.getenv("GITHUB_TOKEN"))
                 .modelName(modelName)
                 .logRequestsAndResponses(true)
@@ -121,7 +121,7 @@ class GitHubModelsStreamingChatModelIT {
     @ValueSource(strings = {"gpt-4o"})
     void should_use_json_format(String modelName) {
 
-        StreamingChatLanguageModel model = GitHubModelsStreamingChatModel.builder()
+        StreamingChatModel model = GitHubModelsStreamingChatModel.builder()
                 .gitHubToken(System.getenv("GITHUB_TOKEN"))
                 .modelName(modelName)
                 .responseFormat(new ChatCompletionsResponseFormatJsonObject())
@@ -145,7 +145,7 @@ class GitHubModelsStreamingChatModelIT {
 
         CompletableFuture<ChatResponse> futureResponse = new CompletableFuture<>();
 
-        StreamingChatLanguageModel model = GitHubModelsStreamingChatModel.builder()
+        StreamingChatModel model = GitHubModelsStreamingChatModel.builder()
                 .gitHubToken(System.getenv("GITHUB_TOKEN"))
                 .modelName(modelName)
                 .logRequestsAndResponses(true)
@@ -261,7 +261,7 @@ class GitHubModelsStreamingChatModelIT {
 
         CompletableFuture<ChatResponse> futureResponse = new CompletableFuture<>();
 
-        StreamingChatLanguageModel model = GitHubModelsStreamingChatModel.builder()
+        StreamingChatModel model = GitHubModelsStreamingChatModel.builder()
                 .gitHubToken(System.getenv("GITHUB_TOKEN"))
                 .modelName(modelName)
                 .logRequestsAndResponses(true)

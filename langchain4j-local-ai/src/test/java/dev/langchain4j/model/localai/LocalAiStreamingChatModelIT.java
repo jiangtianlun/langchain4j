@@ -5,7 +5,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import dev.langchain4j.data.message.AiMessage;
-import dev.langchain4j.model.chat.StreamingChatLanguageModel;
+import dev.langchain4j.model.chat.StreamingChatModel;
 import dev.langchain4j.model.chat.response.ChatResponse;
 import dev.langchain4j.model.chat.response.StreamingChatResponseHandler;
 import java.util.concurrent.CompletableFuture;
@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 
 class LocalAiStreamingChatModelIT {
 
-    StreamingChatLanguageModel model = LocalAiStreamingChatModel.builder()
+    StreamingChatModel model = LocalAiStreamingChatModel.builder()
             .baseUrl("http://localhost:8082/v1")
             .modelName("gpt-4")
             .maxTokens(3)
