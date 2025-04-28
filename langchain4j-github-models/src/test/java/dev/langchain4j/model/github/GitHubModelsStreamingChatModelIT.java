@@ -243,7 +243,7 @@ class GitHubModelsStreamingChatModelIT {
 
         // then
         assertThat(aiMessage2.text()).contains("four");
-        assertThat(aiMessage2.toolExecutionRequests()).isNull();
+        assertThat(aiMessage2.toolExecutionRequests()).isEmpty();
 
         // Token usage should in fact be > 0, but this is currently unsupported on the server side
         TokenUsage tokenUsage2 = response2.tokenUsage();
@@ -377,7 +377,7 @@ class GitHubModelsStreamingChatModelIT {
 
         // then
         assertThat(aiMessage2.text()).contains("4", "16", "512");
-        assertThat(aiMessage2.toolExecutionRequests()).isNull();
+        assertThat(aiMessage2.toolExecutionRequests()).isEmpty();
 
         // Token usage should in fact be > 0, but this is currently unsupported on the server side
         TokenUsage tokenUsage2 = response2.tokenUsage();

@@ -288,7 +288,7 @@ class OpenAiStreamingChatModelIT {
 
         // then
         assertThat(secondAiMessage.text()).contains("4");
-        assertThat(secondAiMessage.toolExecutionRequests()).isNull();
+        assertThat(secondAiMessage.toolExecutionRequests()).isEmpty();
 
         assertTokenUsage(secondResponse.tokenUsage());
 
@@ -383,7 +383,7 @@ class OpenAiStreamingChatModelIT {
 
         // then
         assertThat(secondAiMessage.text()).contains("4");
-        assertThat(secondAiMessage.toolExecutionRequests()).isNull();
+        assertThat(secondAiMessage.toolExecutionRequests()).isEmpty();
 
         assertTokenUsage(secondResponse.tokenUsage());
 
@@ -491,7 +491,7 @@ class OpenAiStreamingChatModelIT {
 
         // then
         assertThat(secondAiMessage.text()).contains("4", "6");
-        assertThat(secondAiMessage.toolExecutionRequests()).isNull();
+        assertThat(secondAiMessage.toolExecutionRequests()).isEmpty();
 
         assertTokenUsage(secondResponse.tokenUsage());
 
