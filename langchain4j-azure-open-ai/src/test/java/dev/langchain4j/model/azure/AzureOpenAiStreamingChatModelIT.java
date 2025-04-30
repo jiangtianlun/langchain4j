@@ -111,6 +111,7 @@ class AzureOpenAiStreamingChatModelIT {
                     Duration.ofSeconds(30),
                     5,
                     null,
+                    null,
                     true,
                     null,
                     null);
@@ -121,6 +122,7 @@ class AzureOpenAiStreamingChatModelIT {
                     System.getenv("AZURE_OPENAI_KEY"),
                     Duration.ofSeconds(30),
                     5,
+                    null,
                     null,
                     true,
                     null,
