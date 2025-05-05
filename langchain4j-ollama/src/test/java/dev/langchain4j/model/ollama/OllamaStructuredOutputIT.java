@@ -2,7 +2,6 @@ package dev.langchain4j.model.ollama;
 
 import static dev.langchain4j.data.message.UserMessage.userMessage;
 import static dev.langchain4j.model.ollama.AbstractOllamaLanguageModelInfrastructure.ollamaBaseUrl;
-import static dev.langchain4j.model.ollama.OllamaImage.LLAMA_3_1;
 import static dev.langchain4j.model.ollama.OllamaJsonUtils.fromJson;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -49,8 +48,10 @@ class OllamaStructuredOutputIT extends AbstractOllamaStructuredOutputLanguageMod
         // given
         ChatModel ollamaChatModel = OllamaChatModel.builder()
                 .baseUrl(ollamaBaseUrl(ollama))
-                .modelName(LLAMA_3_1)
+                .modelName(MODEL_NAME)
                 .temperature(0.0)
+                .logRequests(true)
+                .logResponses(true)
                 .build();
 
         // when
@@ -78,7 +79,7 @@ class OllamaStructuredOutputIT extends AbstractOllamaStructuredOutputLanguageMod
         // given
         ChatModel ollamaChatModel = OllamaChatModel.builder()
                 .baseUrl(ollamaBaseUrl(ollama))
-                .modelName(LLAMA_3_1)
+                .modelName(MODEL_NAME)
                 .temperature(0.0)
                 .responseFormat(ResponseFormat.builder()
                         .type(ResponseFormatType.JSON)
@@ -106,7 +107,7 @@ class OllamaStructuredOutputIT extends AbstractOllamaStructuredOutputLanguageMod
         // given
         StreamingChatModel streamingOllamaChatModelWithResponseFormat = OllamaStreamingChatModel.builder()
                 .baseUrl(ollamaBaseUrl(ollama))
-                .modelName(LLAMA_3_1)
+                .modelName(MODEL_NAME)
                 .temperature(0.0)
                 .responseFormat(ResponseFormat.builder()
                         .type(ResponseFormatType.JSON)
@@ -122,7 +123,6 @@ class OllamaStructuredOutputIT extends AbstractOllamaStructuredOutputLanguageMod
 
             @Override
             public void onPartialResponse(String partialResponse) {}
-
             @Override
             public void onPartialReasoningResponse(final String partialReasoningResponse) {}
 
@@ -170,7 +170,7 @@ class OllamaStructuredOutputIT extends AbstractOllamaStructuredOutputLanguageMod
         // given
         LanguageModel languageModel = OllamaLanguageModel.builder()
                 .baseUrl(ollamaBaseUrl(ollama))
-                .modelName(LLAMA_3_1)
+                .modelName(MODEL_NAME)
                 .temperature(0.0)
                 .responseFormat(ResponseFormat.builder()
                         .type(ResponseFormatType.JSON)
@@ -196,7 +196,7 @@ class OllamaStructuredOutputIT extends AbstractOllamaStructuredOutputLanguageMod
         // given
         StreamingLanguageModel languageModel = OllamaStreamingLanguageModel.builder()
                 .baseUrl(ollamaBaseUrl(ollama))
-                .modelName(LLAMA_3_1)
+                .modelName(MODEL_NAME)
                 .temperature(0.0)
                 .responseFormat(ResponseFormat.builder()
                         .type(ResponseFormatType.JSON)
