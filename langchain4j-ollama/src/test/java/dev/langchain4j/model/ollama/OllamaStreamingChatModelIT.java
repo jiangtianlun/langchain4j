@@ -293,6 +293,11 @@ class OllamaStreamingChatModelIT extends AbstractOllamaLanguageModelInfrastructu
             }
 
             @Override
+            public void onPartialReasoningResponse(final String partialReasoningResponse) {
+
+            }
+
+            @Override
             public void onCompleteResponse(ChatResponse completeResponse) {
                 secondFutureResponse.complete(completeResponse);
             }
@@ -343,6 +348,11 @@ class OllamaStreamingChatModelIT extends AbstractOllamaLanguageModelInfrastructu
         @Override
         public void onPartialResponse(String partialResponse) {
             futureError.completeExceptionally(new RuntimeException("onPartialResponse must not be called"));
+        }
+
+        @Override
+        public void onPartialReasoningResponse(final String partialReasoningResponse) {
+
         }
 
         @Override
