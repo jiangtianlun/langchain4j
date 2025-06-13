@@ -53,6 +53,11 @@ public abstract class AbstractStreamingChatModelIT extends AbstractBaseChatModel
             }
 
             @Override
+            public void onPartialReasoningResponse(final String partialReasoningResponse) {
+
+            }
+
+            @Override
             public void onCompleteResponse(ChatResponse completeResponse) {
                 futureResponse.complete(completeResponse);
             }
@@ -108,6 +113,11 @@ public abstract class AbstractStreamingChatModelIT extends AbstractBaseChatModel
             }
 
             @Override
+            public void onPartialReasoningResponse(final String partialReasoningResponse) {
+
+            }
+
+            @Override
             public void onCompleteResponse(ChatResponse completeResponse) {
                 futureResponse.complete(completeResponse);
                 throw userCodeException;
@@ -157,6 +167,11 @@ public abstract class AbstractStreamingChatModelIT extends AbstractBaseChatModel
 
             @Override
             public void onPartialResponse(String partialResponse) {
+            }
+
+            @Override
+            public void onPartialReasoningResponse(final String partialReasoningResponse) {
+
             }
 
             @Override

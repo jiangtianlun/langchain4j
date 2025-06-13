@@ -111,6 +111,11 @@ class OpenAiStreamingChatModelErrorsTest {
         }
 
         @Override
+        public void onPartialReasoningResponse(final String partialReasoningResponse) {
+
+        }
+
+        @Override
         public void onCompleteResponse(ChatResponse completeResponse) {
             futureError.completeExceptionally(new RuntimeException("onCompleteResponse must not be called"));
         }
